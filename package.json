@@ -6,7 +6,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/w3cj/api-keypr.git"
+    "url": "git+https://github.com/w3cj/api-keyper.git"
   },
   "dependencies": {
     "body-parser": "~1.15.1",
