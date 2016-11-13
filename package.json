@@ -1,0 +1,26 @@
+{
+  "name": "api-keyper",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/w3cj/api-keypr.git"
+  },
+  "dependencies": {
+    "body-parser": "~1.15.1",
+    "cors": "^2.8.1",
+    "debug": "~2.3.2",
+    "dotenv": "^2.0.0",
+    "express": "~4.14.0",
+    "express-http-proxy": "^0.10.1",
+    "express-request-proxy": "^2.0.0",
+    "ipware": "^1.0.0",
+    "jsonwebtoken": "^7.1.9",
+    "monk": "^3.1.3",
+    "morgan": "~1.7.0",
+    "node-uuid": "^1.4.7",
+    "serve-favicon": "~2.3.0"
+  }
+}

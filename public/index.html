@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.js" charset="utf-8"></script>
+    <script src="javascripts/keyper.js" charset="utf-8"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      var keyper = new Keyper({
+        debug: true,
+        hosts: {
+            'maps.googleapis.com': {
+              client_id: 'af4f8bdf771a87248dbca2c5ebb1cabcfa1dfd25'
+            }
+          }
+      });
+
+      keyper.initialize();
+
+      $.get('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522,151.1957362&radius=500&type=restaurant&keyword=cruise')
+        .then(function(data) {
+          console.log(data);
+        }).catch(function(error) {
+          console.log(error);
+        });
+    </script>
+  </body>
+</html>
