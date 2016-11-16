@@ -243,7 +243,7 @@ export default {
 
       console.log('body', body);
 
-      fetch('http://localhost:4339/api/v1/client', {
+      fetch('http://localhost:4444/api/v1/client', {
         method: 'POST',
         body: JSON.stringify(body),
         headers: {

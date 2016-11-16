@@ -15,7 +15,7 @@ A node.js API proxy that keeps your API keys out of client side code.
 
 The proxy will be available at:
 
-`http://localhost:4339/api/v1`
+`http://localhost:4444/api/v1`
 
 ## Usage
 
@@ -88,7 +88,7 @@ Create an instance of the client, with your host and client_id specified:
 
 ```js
 var keyper = new Keyper({
-	host: 'http://localhost:4339/api/v1', // (default value) This is the URL of the Keyper proxy
+	host: 'http://localhost:4444/api/v1', // (default value) This is the URL of the Keyper proxy
 	debug: true, // (Defaults to false) Show logs and error messages. Turn OFF in production.
 	hosts: {
 			'api.to.be.proxied.com': {

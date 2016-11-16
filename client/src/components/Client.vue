@@ -30,10 +30,6 @@
             <div class="collapsible-header"><i class="material-icons">perm_identity</i>View Client ID</div>
             <div class="collapsible-body"><p>{{this.client.client_id}}</p></div>
           </li>
-          <li>
-            <div class="collapsible-header"><i class="material-icons">vpn_key</i>View Client Secret</div>
-            <div class="collapsible-body"><p>{{this.client.client_secret}}</p></div>
-          </li>
         </ul>
       </div>
     </div>
@@ -53,7 +49,6 @@ export default {
     return {
       client: {
         client_id: '',
-        client_secret: '',
         origins: [],
         banned: [],
         host: '',

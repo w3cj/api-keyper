@@ -5,12 +5,12 @@
         <a href="#" class="brand-logo center">API Keyper</a>
         <ul class="left">
           <li><router-link :to="{ name: 'home' }"><i class="material-icons">home</i></router-link></li>
-          <li><router-link :to="{ name: 'clients' }"><i class="material-icons">view_list</i></router-link></li>
-          <li><router-link :to="{ name: 'create' }"><i class="material-icons">create</i></router-link></li>
+          <li><router-link :to="{ name: 'dashboard' }" v-if="isLoggedIn"><i class="material-icons">view_list</i></router-link></li>
+          <li><router-link :to="{ name: 'create' }" v-if="isLoggedIn"><i class="material-icons">create</i></router-link></li>
         </ul>
       </div>
     </nav>
-    <main class="container">
+    <main class="container" style="display:flex;">
       <router-view class="view"></router-view>
     </main>
     <footer class="page-footer">
@@ -37,9 +37,15 @@
 </template>
 
 <script>
+import Auth from './services/Auth';
 
 export default {
   name: 'app',
+  data() {
+    return {
+      isLoggedIn: Auth.isLoggedIn(),
+    };
+  },
 };
 </script>
 

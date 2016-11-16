@@ -4,7 +4,9 @@ const favicon = require('serve-favicon');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 
+const auth = require('./auth');
 const api = require('./api');
 
 const app = express();
@@ -13,17 +15,14 @@ const app = express();
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.enable('trust proxy');
 app.use(logger('dev'));
+app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-// app.use(express.static(path.join(__dirname, 'public')));
+// app.use(express.static(path.join(__dirname, 'client/dist')));
 app.use(cors());
 
-app.get('/', (req, res) => {
-  res.json({
-    message: 'You\'ve reached the index. Please leave a message and we\'ll get back to you'
-  });
-});
-
+app.use(auth.checkTokenSetUser);
+app.use('/auth', auth.router);
 app.use('/api/v1', api);
 
 // catch 404 and forward to error handler

@@ -7,7 +7,7 @@ const get_ip = require('ipware')().get_ip;
 
 require('dotenv').load();
 
-const {clients, instances} = require('../db');
+const {clients, instances, requestLogs} = require('../db');
 
 router.use('/*', (req, res, next) => {
   const requestedWith = req.get('x-keyper-requested-with');
@@ -62,7 +62,7 @@ router.use('/*', (req, res, next) => {
 
             const options = {
                url: '*',
-                headers: {}
+               headers: {}
             };
 
             if(client.query) {
@@ -73,9 +73,23 @@ router.use('/*', (req, res, next) => {
               options.headers = client.headers;
             }
 
+            options.headers['x-keyper-origin'] = '.';
+            options.headers['x-keyper-requested-with'] = '.';
             options.headers['x-keyper-token'] = '.';
 
             instances.findOneAndUpdate({_id: instance._id}, {$inc: {request_count: 1}});
+
+            const urlParts = req.originalUrl.split('/api/v1/request/');
+            const requestURL = urlParts.length > 0 ? urlParts[1] : '';
+
+            console.log('requestURL', requestURL);
+            requestLogs
+              .insert({
+                datetime: new Date(),
+                client_id: instance.client_id,
+                instance_id: instance._id,
+                url: requestURL
+              });
 
             requestProxy(options)(req, res, next);
           } else {

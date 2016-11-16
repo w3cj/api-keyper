@@ -5,7 +5,8 @@
         <br><br>
         <h1 class="header center">Keep your API keys a secret!</h1>
         <div class="row center">
-          <router-link :to="{ name: 'create' }" class="btn-large waves-effect waves-light">Create a Keyper Client</router-link>
+          <a v-if="!isLoggedIn" :href="authURL" class="btn-large waves-effect waves-light green">Login with Github</a>
+          <router-link v-if="isLoggedIn" :to="{ name: 'dashboard' }" class="btn-large waves-effect waves-light">Go to the Dashboard</router-link>
         </div>
         <br><br>
         <div class="row">
@@ -41,12 +42,18 @@
 </template>
 
 <script>
+import Auth from '../services/Auth';
+
 export default {
   name: 'home',
   data() {
     return {
-      msg: 'Welcome to Your Vue.js App',
+      authURL: Auth.authURL,
+      isLoggedIn: Auth.isLoggedIn(),
     };
+  },
+  created() {
+    this.isLoggedIn = Auth.isLoggedIn();
   },
 };
 </script>

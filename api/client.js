@@ -4,41 +4,38 @@ const url = require('url');
 
 require('dotenv').load();
 
-const {clients, instances} = require('../db');
+const {clients, instances, requestLogs} = require('../db');
 
-router.get('/', (req, res, next) => {
+router.get('/', (req, res) => {
   clients
-    .find({})
+    .find({
+      user_id: req.user._id
+    })
     .then(clients => {
       res.json(clients);
     });
-})
+});
 
-router.post('/:id', (req, res, next) => {
+router.get('/:id/instances', (req, res, next) => {
   const client_id = req.params.id;
-  const {client_secret} = req.body;
 
-  if(client_secret)  {
-    clients
-      .findOne({
-        client_id,
-        client_secret
-      }).then(client => {
-        if(client) {
-          return instances
-              .find({
-                client_id,
-                active: true
-              }).then(activeInstances => {
-              res.json(activeInstances);
-            });
-        } else {
-          return next('Keyper Error: Invalid client');
-        }
-      });
-  } else {
-    next('Keyper Error: Missing client_secret');
-  }
+  clients
+    .findOne({
+      client_id,
+      user_id: req.user._id
+    }).then(client => {
+      if(client) {
+        return instances
+            .find({
+              client_id,
+              active: true
+            }).then(activeInstances => {
+            res.json(activeInstances);
+          });
+      } else {
+        return next('Keyper Error: Invalid client');
+      }
+    });
 });
 
 router.post('/', (req, res, next) => {
@@ -47,26 +44,24 @@ router.post('/', (req, res, next) => {
       return next('Keyper Error: Origins must be valid URLs');
     }
 
-    Promise.all([
-      generateRandomToken(),
-      generateRandomToken()
-    ]).then(tokens => {
-      const client = {
-        client_id: tokens[0],
-        client_secret: tokens[1],
-        origins: req.body.origins,
-        banned: [],
-        host: req.body.host,
-        query: req.body.query,
-        headers: req.body.headers
-      };
+    generateRandomToken()
+      .then(token => {
+        const client = {
+          client_id: token,
+          origins: req.body.origins,
+          banned: [],
+          host: req.body.host,
+          query: req.body.query,
+          headers: req.body.headers,
+          user_id: req.user._id
+        };
 
-      clients
-        .insert(client)
-        .then(result => {
-          res.json(result);
-        });
-    });
+        clients
+          .insert(client)
+          .then(result => {
+            res.json(result);
+          });
+      });
   } else {
     next('Keyper Error: Invalid client info. Must have origins, a host and either query or headers.');
   }
@@ -74,102 +69,94 @@ router.post('/', (req, res, next) => {
 
 router.delete('/:id', (req, res, next) => {
   const client_id = req.params.id;
-  const {client_secret} = req.body;
 
-  if(client_secret)  {
-    clients
-      .findOne({
-        client_id,
-        client_secret
-      }).then(client => {
-        if(client) {
-          return clients
+  clients
+    .findOne({
+      client_id,
+      user_id: req.user._id
+    }).then(client => {
+      if(client) {
+        return Promise.all([
+          clients
+            .remove({
+              _id: client._id
+            }),
+          instances
             .remove({
               client_id
-            }).then(() => {
-              return instances.remove({
-                client_id
-              });
-            }).then(() => {
-              res.json({
-                message: 'Client deleted'
-              });
-            });
-        } else {
-          return next('Keyper Error: Invalid client');
-        }
-      });
-  } else {
-    next('Keyper Error: Missing client_secret');
-  }
+            }),
+          requestLogs
+            .remove({
+              client_id
+            })
+        ]).then(() => {
+          res.json({
+            message: 'Client deleted'
+          });
+        });
+      } else {
+        return next('Keyper Error: Invalid client');
+      }
+    });
 });
 
 router.post('/:id/ban', (req, res, next) => {
   const {id: client_id } = req.params;
-  const {client_secret, ips} = req.body;
+  const {ips} = req.body;
 
-  if(client_secret)  {
-    clients
-      .findOne({
-        client_id,
-        client_secret
-      }).then(client => {
-        if(client) {
-          if(client.banned) ips.concat(client.banned);
-          clients.findOneAndUpdate({
-            client_id
-          }, {
-            $set: {
-              banned: ips
-            }
-          }).then(() => {
-            return instances
-              .remove({
-                client_id,
-                ip: {
-                  $in: ips
-                }
-              }).then(() => {
-                res.json({
-                  message: 'IP(s) banned'
-                });
+  clients
+    .findOne({
+      client_id,
+      user_id: req.user._id
+    }).then(client => {
+      if(client) {
+        if(client.banned) ips.concat(client.banned);
+        clients.findOneAndUpdate({
+          client_id
+        }, {
+          $set: {
+            banned: ips
+          }
+        }).then(() => {
+          return instances
+            .remove({
+              client_id,
+              ip: {
+                $in: ips
+              }
+            }).then(() => {
+              res.json({
+                message: 'IP(s) banned'
               });
-          });
-        } else {
-          return next('Keyper Error: Invalid client');
-        }
-      });
-  } else {
-    next('Keyper Error: Missing client_secret');
-  }
+            });
+        });
+      } else {
+        return next('Keyper Error: Invalid client');
+      }
+    });
 });
 
 router.delete('/:id/instance/:instance_id', (req, res, next) => {
   const {id: client_id, instance_id } = req.params;
-  const {client_secret} = req.body;
 
-  if(client_secret)  {
-    clients
-      .findOne({
-        client_id,
-        client_secret
-      }).then(client => {
-        if(client) {
-          return instances.remove({
-                _id: instance_id,
-                client_id
-              }).then(() => {
-                res.json({
-                  message: 'Instance removed.'
-                });
+  clients
+    .findOne({
+      client_id,
+      user_id: req.user._id
+    }).then(client => {
+      if(client) {
+        return instances.remove({
+              _id: instance_id,
+              client_id
+            }).then(() => {
+              res.json({
+                message: 'Instance removed.'
               });
-        } else {
-          return next('Keyper Error: Invalid client');
-        }
-      });
-  } else {
-    next('Keyper Error: Missing client_secret');
-  }
+            });
+      } else {
+        return next('Keyper Error: Invalid client');
+      }
+    });
 });
 
 function validClient(client) {

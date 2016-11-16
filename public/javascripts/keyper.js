@@ -1,5 +1,5 @@
 function Keyper(config) {
-  config.host = config.host || 'http://localhost:4339/api/v1';
+  config.host = config.host || 'http://localhost:4444/api/v1';
   this.config = config;
   this.initialize = initialize;
   this.checkClientToken = checkClientToken;
