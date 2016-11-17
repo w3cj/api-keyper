@@ -231,6 +231,16 @@ ee-first@1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
 
+emoji-favicon:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/emoji-favicon/-/emoji-favicon-0.3.0.tgz#1ac40736b628dd251ac16c24fdb302ab69e96ce0"
+  dependencies:
+    emoji-img "^1.0.0"
+
+emoji-img@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/emoji-img/-/emoji-img-1.0.0.tgz#6b62407f3a46c02c10888c28929e46a3bf2fde11"
+
 encodeurl@~1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/encodeurl/-/encodeurl-1.0.1.tgz#79e3d58655346909fe6f0f45a5de68103b294d20"

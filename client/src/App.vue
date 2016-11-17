@@ -8,6 +8,12 @@
           <li><router-link :to="{ name: 'dashboard' }" v-if="isLoggedIn"><i class="material-icons">view_list</i></router-link></li>
           <li><router-link :to="{ name: 'create' }" v-if="isLoggedIn"><i class="material-icons">create</i></router-link></li>
         </ul>
+        <ul class="right" v-if="isLoggedIn">
+          <li>
+            <img :src="currentUser.avatar_url" alt="" class="circle user-photo">
+          </li>
+          <li><router-link :to="{ name: 'logout' }"><i class="material-icons">exit_to_app</i></router-link></li>
+        </ul>
       </div>
     </nav>
     <main class="container" style="display:flex;">
@@ -18,7 +24,7 @@
         <div class="row">
           <div class="col l6 s12">
             <h5 class="white-text">API Keyper</h5>
-            <p class="grey-text text-lighten-4">A node.js API proxy that keeps your API keys out of client side code.</p>
+            <p class="grey-text text-lighten-4">An API proxy that keeps your API keys out of client side code.</p>
           </div>
           <div class="col l4 offset-l2 s12">
             <ul>
@@ -46,6 +52,20 @@ export default {
       isLoggedIn: Auth.isLoggedIn(),
     };
   },
+  watch: {
+    $route() {
+      this.isLoggedIn = Auth.isLoggedIn();
+      this.currentUser = Auth.getCurrentUser();
+    },
+  },
+  created() {
+    this.isLoggedIn = Auth.isLoggedIn();
+    this.currentUser = Auth.getCurrentUser();
+  },
+  activated() {
+    this.isLoggedIn = Auth.isLoggedIn();
+    this.currentUser = Auth.getCurrentUser();
+  },
 };
 </script>
 
@@ -58,5 +78,11 @@ export default {
 
   main {
     flex: 1 0 auto;
+  }
+
+  .user-photo {
+    margin-top: 0.5em;
+    height: 50px;
+    width: auto;
   }
 </style>

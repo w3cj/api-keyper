@@ -37,6 +37,8 @@
 </template>
 
 <script>
+import API from '../services/API';
+
 /* eslint-disable */
 $(document).ready(function(){
   $('.collapsible').collapsible();
@@ -48,6 +50,7 @@ export default {
   data() {
     return {
       client: {
+        name: '',
         client_id: '',
         origins: [],
         banned: [],
@@ -62,9 +65,11 @@ export default {
   },
   methods: {
     getClient() {
-      /* eslint-disable */
-      const keyperClients = JSON.parse(localStorage.keyper_clients);
-      this.client = keyperClients[this.$route.params.id];
+      API
+        .getClient(this.$route.params.id)
+        .then((client) => {
+          this.client = client;
+        });
     },
   },
 };

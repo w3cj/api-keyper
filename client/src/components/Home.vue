@@ -55,5 +55,8 @@ export default {
   created() {
     this.isLoggedIn = Auth.isLoggedIn();
   },
+  activated() {
+    this.isLoggedIn = Auth.isLoggedIn();
+  },
 };
 </script>

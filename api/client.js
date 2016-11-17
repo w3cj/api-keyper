@@ -1,3 +1,4 @@
+
 const express = require('express');
 const router = express.Router();
 const url = require('url');
@@ -13,6 +14,28 @@ router.get('/', (req, res) => {
     })
     .then(clients => {
       res.json(clients);
+    });
+});
+
+router.get('/:id', (req, res, next) => {
+  const client_id = req.params.id;
+
+  clients
+    .findOne({
+      client_id,
+      user_id: req.user._id
+    }).then(client => {
+      if(client) {
+        instances
+          .count({
+            client_id
+          }).then(count => {
+            client.count = count;
+            res.json(client);
+          });
+      } else {
+        return next('Keyper Error: Invalid client');
+      }
     });
 });
 
@@ -47,6 +70,7 @@ router.post('/', (req, res, next) => {
     generateRandomToken()
       .then(token => {
         const client = {
+          name: req.body.name,
           client_id: token,
           origins: req.body.origins,
           banned: [],
@@ -63,7 +87,7 @@ router.post('/', (req, res, next) => {
           });
       });
   } else {
-    next('Keyper Error: Invalid client info. Must have origins, a host and either query or headers.');
+    next('Keyper Error: Invalid client info. Must have name, origins, a host and either query or headers.');
   }
 });
 
@@ -160,7 +184,9 @@ router.delete('/:id/instance/:instance_id', (req, res, next) => {
 });
 
 function validClient(client) {
-  return typeof client.host == 'string' &&
+  return typeof client.name == 'string' &&
+    client.name.trim() != '' &&
+    typeof client.host == 'string' &&
     client.host.trim() != '' &&
     typeof client.origins == 'object' &&
     client.origins.constructor == Array &&

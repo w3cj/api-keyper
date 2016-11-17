@@ -10,6 +10,11 @@ function Auth() {
 
   this.isLoggedIn = isLoggedIn;
   this.getCurrentUser = getCurrentUser;
+  this.logOut = logOut;
+
+  function logOut() {
+    localStorage.removeItem('token');
+  }
 
   function isLoggedIn() {
     return getCurrentUser() == null ? false : true;
