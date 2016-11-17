@@ -1,5 +1,4 @@
 import 'materialize-themes/dist/css/materialize-indigo-pink.css';
-import 'materialize-css/dist/js/materialize';
 
 import Vue from 'vue';
 import VueRouter from 'vue-router';
@@ -13,6 +12,11 @@ import Create from './components/Create';
 import Client from './components/Client';
 
 import Auth from './services/Auth';
+
+/* eslint-disable */
+window.$ = window.jQuery = require('materialize-css/node_modules/jquery/dist/jquery');
+require('materialize-css/dist/js/materialize');
+/* eslint-enable */
 
 Vue.use(VueRouter);
 Vue.use(VueCookie);

@@ -10,7 +10,7 @@
         <div class="col s12">
           <ul class="collection with-header">
             <li class="collection-header"><h4>Clients</h4></li>
-            <router-link :to="{ name: 'client', params: { id: client._id } }" v-for="client in clients" class="collection-item avatar green-text">
+            <router-link :to="{ name: 'client', params: { id: client.client_id } }" v-for="client in clients" class="collection-item avatar green-text">
               <i class="material-icons circle">lock</i>
               <span class="title">{{client.name}}</spanclass>
               <p><strong>Host:</strong>  {{client.host}}</p>

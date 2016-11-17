@@ -33,6 +33,9 @@ function API() {
     getClient(id) {
       return getJSON(`client/${id}`);
     },
+    getInstances(id) {
+      return getJSON(`client/${id}/instances`);
+    },
     createClient(client) {
       return postJSON('client', client);
     },

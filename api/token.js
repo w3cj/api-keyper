@@ -38,6 +38,11 @@ router.get('/check', (req, res, next) => {
 });
 
 router.post('/', (req, res, next) => {
+  const user_agent = req.get('user-agent');
+  if(!user_agent) {
+    return next('Keyper Error: Missing required header.');
+  }
+
   let hosts = req.body;
   const ip = get_ip(req).clientIp;
 
@@ -57,7 +62,7 @@ router.post('/', (req, res, next) => {
         return {
           ip,
           client_id: client.client_id,
-          request_count: 0,
+          user_agent,
           active: true
         };
       });
